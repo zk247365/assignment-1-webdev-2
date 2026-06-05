@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assignment one</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 p-6">
+
+  <!-- nav bar -->
+  <div class="flex justify-center space-x-6 mb-8 text-lg font-semibold">
+    <button class="tab" data-tab="w">Weight</button>
+    <button class="tab" data-tab="d">Distance</button>
+    <button class="tab" data-tab="t">Temperature</button>
+  </div>
+
+  <!-- content wrap design -->
+  <div class="max-w-md mx-auto bg-white p-6 rounded shadow space-y-10">
+
+    <!-- weight calculator -->
+    <div id="w" class="flex flex-col space-y-3">
+      <h2 class="text-xl font-bold">Weight (kg ↔ lb)</h2>
+
+      <input id="wInput" class="border p-2 w-full" placeholder="10 or 5,10,15">
+
+      <div class="flex space-x-3">
+        <button onclick="run('kg','lb','w')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          KG → LB
+        </button>
+
+        <button onclick="run('lb','kg','w')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          LB → KG
+        </button>
+      </div>
+
+      <p id="wOut" class="bg-gray-200 p-2 rounded"></p>
+    </div>
+
+    <!-- distance calculator -->
+    <div id="d" class="hidden flex-col space-y-3">
+      <h2 class="text-xl font-bold">Distance (km ↔ mi)</h2>
+
+      <input id="dInput" class="border p-2 w-full" placeholder="10 or 5,10,15">
+
+      <div class="flex space-x-3">
+        <button onclick="run('km','mi','d')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          KM → MI
+        </button>
+
+        <button onclick="run('mi','km','d')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          MI → KM
+        </button>
+      </div>
+
+      <p id="dOut" class="bg-gray-200 p-2 rounded"></p>
+    </div>
+
+    <!-- temperature calculator -->
+    <div id="t" class="hidden flex-col space-y-3">
+      <h2 class="text-xl font-bold">Temperature (°C ↔ °F)</h2>
+
+      <input id="tInput" class="border p-2 w-full" placeholder="10 or 5,10,15">
+
+      <div class="flex space-x-3">
+        <button onclick="run('c','f','t')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          C → F
+        </button>
+
+        <button onclick="run('f','c','t')" 
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500">
+          F → C
+        </button>
+      </div>
+
+      <p id="tOut" class="bg-gray-200 p-2 rounded"></p>
+    </div>
+
+  </div>
+
+  <script>
+    // higher-order converter. rounded to 3 decimal place
+    const make = (from, to) => (v) => {
+      v = parseFloat(v);
+      const round = (x) => parseFloat(x.toFixed(3));
+
+      if (from==="kg"&&to==="lb") return round(v*2.20462);
+      if (from==="lb"&&to==="kg") return round(v/2.20462);
+
+      if (from==="km"&&to==="mi") return round(v*0.621371);
+      if (from==="mi"&&to==="km") return round(v/0.621371);
+
+      if (from==="c"&&to==="f") return round((v*9/5)+32);
+      if (from==="f"&&to==="c") return round((v-32)*5/9);
+    };
+
+    // Run conversion
+    function run(from, to, id) {
+      const raw = document.getElementById(id+"Input").value;
+      const arr = raw.includes(",") ? raw.split(",").map(x=>x.trim()) : raw.trim();
+      const conv = make(from,to);
+      const out = Array.isArray(arr) ? arr.map(conv) : conv(arr);
+
+      document.getElementById(id+"Out").textContent =
+        Array.isArray(out) ? out.join(", ") : out;
+    }
+
+    // tab switching
+    const tabs = document.querySelectorAll(".tab");
+    tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+    const target = tab.dataset.tab;
+
+    document.querySelectorAll("#w, #d, #t").forEach(div => {
+      div.classList.add("hidden");
+    });
+
+    document.getElementById(target).classList.remove("hidden");
+  });
+});
+  </script>
+
+</body>
+</html>
